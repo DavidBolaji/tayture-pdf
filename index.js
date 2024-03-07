@@ -5,6 +5,8 @@ const hpp = require("hpp");
 const compression = require("compression");
 const nodeCron = require("node-cron")
 const { scrapeLogic } = require("./scrapeLogic");
+const { startMailServer } = require("./mail/transporter");
+
 const app = express();
 
 const PORT = process.env.PORT || 4000;
@@ -18,8 +20,9 @@ app.use(hpp())
 app.use(compression())
 app.use(morgan(':method :url :status :response-time ms'))
 
-app.get("/api/pdf", (req, res) => {
-  scrapeLogic(res);
+app.post("/api/pdf", (req, res) => {
+  const {colorList, data, email} = req.body;
+  scrapeLogic(res, {colorList, data, email});
 });
 
 app.get("/", (req, res) => {
@@ -27,5 +30,6 @@ app.get("/", (req, res) => {
 });
 
 app.listen(PORT, () => {
+  startMailServer();
   console.log(`Listening on port ${PORT}`);
 });
