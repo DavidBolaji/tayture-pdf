@@ -3,7 +3,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 const hpp = require("hpp");
 const compression = require("compression");
-const nodeCron = require("node-cron")
+const cron = require('node-cron');
 const { scrapeLogic } = require("./scrapeLogic");
 const { startMailServer } = require("./mail/transporter");
 
@@ -29,7 +29,13 @@ app.get("/", (req, res) => {
   res.send("Render Puppeteer server is up and running!");
 });
 
+
+
 app.listen(PORT, () => {
   startMailServer();
+  cron.schedule('*/13 * * * *', () => {
+    console.log(new Date().toISOString(), 'Calling endpoint...');
+    callEndpoint();
+});
   console.log(`Listening on port ${PORT}`);
 });

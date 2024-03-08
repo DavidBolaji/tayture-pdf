@@ -1,5 +1,6 @@
 require("dotenv").config();
 const nodemailer = require('nodemailer')
+const axios = require('axios');
 
 const transporter = nodemailer.createTransport({
   host: 'tayture.com',
@@ -22,7 +23,18 @@ const startMailServer = () => {
   })
 }
 
+async function callEndpoint() {
+  try {
+      const response = await axios.get(process.env.SERVER_URL);
+      console.log('Endpoint called successfully:', response.data);
+  } catch (error) {
+      console.error('Error calling endpoint:', error);
+  }
+}
+
+
 module.exports = {
   transporter,
-  startMailServer
+  startMailServer,
+  callEndpoint
 }
